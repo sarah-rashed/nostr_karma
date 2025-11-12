@@ -1,6 +1,6 @@
 {
   "name": "my-nostr-client",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "nostr-tools": "1.17.0"
+    "nostr-tools": "^2.6.0"        
   },
   "devDependencies": {
-    "vite": "^7.1.11"
+    "vite": "^5.3.0"               
   }
 }
