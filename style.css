@@ -88,6 +88,10 @@ input:focus, textarea:focus {
     min-width: 300px;
     font-family: monospace;
     font-size: 12px;
+
+    /* wrap long npubs */
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 #note-content {
@@ -125,6 +129,10 @@ button:disabled {
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 10px;
+
+    /* allow long strings to wrap */
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .note-header {
@@ -139,11 +147,19 @@ button:disabled {
 .note-author {
     font-family: monospace;
     font-weight: 600;
+
+    /* allow long pubkeys / npubs */
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .note-content {
     line-height: 1.6;
-    white-space: pre-wrap;
+
+    /* wrap everything */
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .loading {
@@ -152,21 +168,33 @@ button:disabled {
     font-style: italic;
 }
 
+/* -------------------- */
+/* VOTING BUTTONS FIXED */
+/* -------------------- */
+
 .vote-btn {
-  color:#6b7280;
   border: none;
   background: transparent;
   cursor: pointer;
   font-size: 18px;
   padding: 4px 6px;
-  transition: transform 0.15s ease, color 0.2s ease;
+
+  /* remove scaling hover behavior */
+  transition: color 0.15s ease;
+  transform: none;
 }
 
+/* Remove scaling hover */
 .vote-btn:hover {
-  transform: scale(1.2);
+  transform: none;
 }
 
-/* active states */
+/* DEFAULT neutral grey for arrows */
+.vote-btn {
+  color: #6b7280;
+}
+
+/* ACTIVE STATES – clicking changes color */
 .vote-upvoted {
   color: #8CE3F5 !important;
 }
@@ -175,6 +203,7 @@ button:disabled {
   color: #F5364F !important;
 }
 
+/* SCORE COUNTER */
 .vote-score {
   font-weight: 600;
   min-width: 30px;
@@ -182,7 +211,7 @@ button:disabled {
   transition: color 0.2s ease;
 }
 
-/* flash for score */
+/* SCORE FLASH ANIMATIONS */
 .vote-flash {
   animation: flashVote 0.4s ease;
 }

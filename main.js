@@ -1,6 +1,3 @@
-// v1 client with per-post upvote/downvote, one vote per user per post,
-// buffered feed, SVG icons, and score display.
-
 import {
   generatePrivateKey,
   getPublicKey,
@@ -218,7 +215,7 @@ class NostrClient {
     const div = document.createElement('div')
     div.className = 'note'
     const date = new Date((ev.created_at || Math.floor(Date.now()/1000)) * 1000).toLocaleString()
-    const short = (ev.pubkey || '').slice(0, 8) + '...' + (ev.pubkey || '').slice(-8)
+    const short = (ev.pubkey || '')
     const content = this.escapeHtml(ev.content || '')
 
     // SVG-based vote controls + score
@@ -248,16 +245,30 @@ class NostrClient {
   escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML }
 
   // ---------- Score / votes ----------
-  async updateScoreForPost(eventId) {
-    const scoreEl = document.getElementById(`score-${eventId}`)
-    if (!scoreEl) return
-    scoreEl.textContent = '…'
+async updateScoreForPost(eventId) {
+  const scoreEl = document.getElementById(`score-${eventId}`)
+  if (!scoreEl) return
+  scoreEl.textContent = '…'
 
-    const votes = await this.fetchVotesForPost(eventId)
-    const score = this.computeScore(votes)
+  // get votes grouped by relay
+  const votesByRelay = await this.fetchVotesForPostByRelay(eventId)
 
-    scoreEl.textContent = score > 0 ? `+${score}` : `${score}`
+  // compute per-relay scores + final aggregated score
+  const { finalScore, relayScores } = this.computeScoreFromRelays(votesByRelay)
+
+  // display final score (median across relays)
+  scoreEl.textContent = finalScore > 0 ? `+${finalScore}` : `${finalScore}`
+
+  // OPTIONAL: transparency — show per-relay scores on hover
+  const parts = []
+  for (const [url, score] of Object.entries(relayScores)) {
+    parts.push(`${url}: ${score}`)
   }
+  scoreEl.title = parts.length
+    ? `Relay scores:\n${parts.join('\n')}`
+    : 'No votes seen on any relay yet'
+}
+
 
   async fetchVotesForPost(eventIdHex, timeoutMs = 4000) {
     const results = []
