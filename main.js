@@ -359,7 +359,6 @@ async updateScoreForPost(eventId) {
   }
 
   // ---------- Posting ----------
-  // ---------- Posting ----------
 async publishNote() {
   const content = (this.elements.noteContent?.value || '').trim()
   if (!content) {
